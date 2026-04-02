@@ -97,8 +97,11 @@ function initGame() {
   invaderSpeed = 0.5 + (level - 1) * 0.15;
   enemyShotInterval = max(400, 1200 - (level - 1) * 100);
 
-  let types = [3, 2, 2, 1, 1];
-  for (let row = 0; row < 5; row++) {
+  // Scale difficulty by level
+  let allTypes = [3, 2, 2, 1, 1];
+  let numRows = (level === 1) ? 3 : min(5, 3 + level - 1);
+  let types = allTypes.slice(5 - numRows); // take bottom rows first (easiest)
+  for (let row = 0; row < numRows; row++) {
     for (let col = 0; col < 10; col++) {
       let x = 60 + col * 48;
       let y = 80 + row * 40;
@@ -106,8 +109,10 @@ function initGame() {
     }
   }
 
-  for (let i = 0; i < 4; i++) {
-    let bx = 90 + i * 130;
+  let numBarriers = (level === 1) ? 2 : 4;
+  let barrierSpacing = GW / (numBarriers + 1);
+  for (let i = 0; i < numBarriers; i++) {
+    let bx = barrierSpacing * (i + 1) - 25;
     barriers.push(new Barrier(bx, 560));
   }
 }
