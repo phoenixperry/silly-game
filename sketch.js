@@ -61,11 +61,11 @@ function setup() {
   if (isMobile) {
     let leftZoneScreen = btnMargin + btnSize * 2 + btnMargin * 2 + 10;
     let rightZoneScreen = btnMargin + btnSize + 10;
-    playerMinX = leftZoneScreen / S + 20;
-    playerMaxX = GW - rightZoneScreen / S - 20;
+    playerMinX = leftZoneScreen / S + 26;
+    playerMaxX = GW - rightZoneScreen / S - 26;
   } else {
-    playerMinX = 20;
-    playerMaxX = GW - 20;
+    playerMinX = 26;
+    playerMaxX = GW - 26;
   }
 
   initStars();
