@@ -57,16 +57,10 @@ function setup() {
   btnMargin = 20 * S;
   btnY = ch - btnSize - btnMargin;
 
-  // Compute player movement bounds so it can't slide under touch buttons
-  if (isMobile) {
-    let leftZoneScreen = btnMargin + btnSize * 2 + btnMargin * 2 + 10;
-    let rightZoneScreen = btnMargin + btnSize + 10;
-    playerMinX = leftZoneScreen / S + 26;
-    playerMaxX = GW - rightZoneScreen / S - 26;
-  } else {
-    playerMinX = 28;
-    playerMaxX = GW - 28;
-  }
+  // Player bounds — same on mobile and desktop since touch buttons
+  // are below the player area and don't overlap
+  playerMinX = 28;
+  playerMaxX = GW - 28;
 
   initStars();
   initGame();
