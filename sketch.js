@@ -32,6 +32,8 @@ let touchShootActive = false;
 let lastAutoShot = 0;
 let autoShotInterval = 300;
 let btnSize, btnY, btnMargin;
+let playerMinX = 20;
+let playerMaxX = 580;
 
 function setup() {
   isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ||
@@ -58,6 +60,17 @@ function setup() {
   btnSize = 70 * S;
   btnMargin = 20 * S;
   btnY = height - btnSize - btnMargin;
+
+  // Compute player movement bounds so it can't slide under touch buttons
+  if (isMobile) {
+    let leftZoneScreen = btnMargin + btnSize * 2 + btnMargin * 2 + 10;
+    let rightZoneScreen = btnMargin + btnSize + 10;
+    playerMinX = leftZoneScreen / S + 20;
+    playerMaxX = GW - rightZoneScreen / S - 20;
+  } else {
+    playerMinX = 20;
+    playerMaxX = GW - 20;
+  }
 
   initStars();
   initGame();
@@ -335,9 +348,18 @@ function drawHUD() {
 }
 
 function drawMiniShip(x, y) {
-  fill(0, 255, 100);
   noStroke();
-  triangle(x, y - 8, x - 8, y + 4, x + 8, y + 4);
+  // Mini cat head
+  fill(0, 255, 100);
+  // Ears
+  triangle(x - 7, -1 + y, x - 5, -7 + y, x - 2, 0 + y);
+  triangle(x + 7, -1 + y, x + 5, -7 + y, x + 2, 0 + y);
+  // Head
+  ellipse(x, y, 14, 11);
+  // Eyes
+  fill(0);
+  ellipse(x - 3, y - 1, 3, 3);
+  ellipse(x + 3, y - 1, 3, 3);
 }
 
 function drawCenterText(title, subtitle) {
@@ -506,31 +528,61 @@ class Player {
     if (touchLeftActive) this.x -= this.speed;
     if (touchRightActive) this.x += this.speed;
 
-    this.x = constrain(this.x, 20, GW - 20);
+    this.x = constrain(this.x, playerMinX, playerMaxX);
   }
 
   draw() {
     push();
+    translate(this.x, this.y);
     noStroke();
-    fill(0, 255, 100, 30);
-    ellipse(this.x, this.y, 50, 20);
 
+    // Glow
+    fill(0, 255, 100, 25);
+    ellipse(0, 0, 55, 25);
+
+    // Ears (triangles)
     fill(0, 255, 100);
-    beginShape();
-    vertex(this.x, this.y - 18);
-    vertex(this.x - 18, this.y + 8);
-    vertex(this.x - 8, this.y + 4);
-    vertex(this.x, this.y - 2);
-    vertex(this.x + 8, this.y + 4);
-    vertex(this.x + 18, this.y + 8);
-    endShape(CLOSE);
+    triangle(-14, -6, -10, -20, -4, -8);
+    triangle(14, -6, 10, -20, 4, -8);
+    // Inner ears
+    fill(100, 255, 180);
+    triangle(-12, -8, -10, -17, -6, -9);
+    triangle(12, -8, 10, -17, 6, -9);
 
-    fill(150, 255, 200);
-    ellipse(this.x, this.y - 6, 6, 8);
+    // Head
+    fill(0, 255, 100);
+    ellipse(0, 0, 32, 26);
 
-    fill(0, 200, 80, 150 + sin(frameCount * 0.3) * 50);
-    ellipse(this.x - 10, this.y + 8, 5, 8);
-    ellipse(this.x + 10, this.y + 8, 5, 8);
+    // Eyes
+    fill(0);
+    ellipse(-6, -3, 7, 8);
+    ellipse(6, -3, 7, 8);
+    // Pupils (look forward)
+    fill(200, 255, 220);
+    ellipse(-6, -3, 3, 4);
+    ellipse(6, -3, 3, 4);
+
+    // Nose
+    fill(255, 150, 180);
+    triangle(-2, 2, 2, 2, 0, 4);
+
+    // Mouth
+    stroke(0);
+    strokeWeight(1);
+    noFill();
+    arc(-3, 5, 5, 4, 0, PI);
+    arc(3, 5, 5, 4, 0, PI);
+
+    // Whiskers
+    stroke(200, 255, 200);
+    strokeWeight(0.8);
+    line(-16, 1, -25, -2);
+    line(-16, 3, -25, 4);
+    line(-16, 5, -24, 8);
+    line(16, 1, 25, -2);
+    line(16, 3, 25, 4);
+    line(16, 5, 24, 8);
+
     pop();
   }
 
