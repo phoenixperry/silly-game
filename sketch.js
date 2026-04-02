@@ -39,27 +39,23 @@ function setup() {
   isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ||
              (windowWidth < 800 && "ontouchstart" in window);
 
-  let cw, ch;
-  if (isMobile) {
-    cw = windowWidth;
-    ch = windowHeight;
-  } else {
-    cw = min(windowWidth, 600);
-    ch = min(windowHeight, 700);
-  }
+  // Always fill the full window
+  let cw = windowWidth;
+  let ch = windowHeight;
 
-  // Scale to fit the game world
+  // Scale game world to fit, preserving aspect ratio
   let sx = cw / GW;
   let sy = ch / GH;
   S = min(sx, sy);
 
-  createCanvas(GW * S, GH * S);
+  // Use full window as canvas, we'll center the game world inside it
+  createCanvas(cw, ch);
   textFont("monospace");
 
   invaderDropAmount = 20;
   btnSize = 70 * S;
   btnMargin = 20 * S;
-  btnY = height - btnSize - btnMargin;
+  btnY = ch - btnSize - btnMargin;
 
   // Compute player movement bounds so it can't slide under touch buttons
   if (isMobile) {
@@ -120,10 +116,19 @@ function initGame() {
   }
 }
 
+// Offset to center the game world in the canvas
+function gameOffsetX() {
+  return (width - GW * S) / 2;
+}
+function gameOffsetY() {
+  return (height - GH * S) / 2;
+}
+
 function draw() {
   background(0);
 
   push();
+  translate(gameOffsetX(), gameOffsetY());
   scale(S);
 
   drawStars();
@@ -416,15 +421,15 @@ function drawTouchControls() {
 function getTouchButton(tx, ty) {
   let bs = btnSize;
   let m = btnMargin;
-  let y = btnY;
+  let by = btnY;
 
   // Left
-  if (tx >= m && tx <= m + bs && ty >= y && ty <= y + bs) return "left";
+  if (tx >= m && tx <= m + bs && ty >= by && ty <= by + bs) return "left";
   // Right
-  if (tx >= m + bs + m && tx <= m + bs + m + bs && ty >= y && ty <= y + bs) return "right";
+  if (tx >= m + bs + m && tx <= m + bs + m + bs && ty >= by && ty <= by + bs) return "right";
   // Fire
   let fx = width - m - bs;
-  if (tx >= fx && tx <= fx + bs && ty >= y && ty <= y + bs) return "fire";
+  if (tx >= fx && tx <= fx + bs && ty >= by && ty <= by + bs) return "fire";
 
   return null;
 }
