@@ -64,8 +64,8 @@ function setup() {
     playerMinX = leftZoneScreen / S + 26;
     playerMaxX = GW - rightZoneScreen / S - 26;
   } else {
-    playerMinX = 26;
-    playerMaxX = GW - 26;
+    playerMinX = 28;
+    playerMaxX = GW - 28;
   }
 
   initStars();
