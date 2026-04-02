@@ -57,10 +57,12 @@ function setup() {
   btnMargin = 20 * S;
   btnY = ch - btnSize - btnMargin;
 
-  // Player bounds — same on mobile and desktop since touch buttons
-  // are below the player area and don't overlap
-  playerMinX = 28;
-  playerMaxX = GW - 28;
+  // Player bounds based on actual visible screen edges (not game world)
+  let catHalf = 23; // half-width of cat sprite (whiskers)
+  let visibleLeft = -gameOffsetX() / S;
+  let visibleRight = (cw - gameOffsetX()) / S;
+  playerMinX = visibleLeft + catHalf;
+  playerMaxX = visibleRight - catHalf;
 
   initStars();
   initGame();
